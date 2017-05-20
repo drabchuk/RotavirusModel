@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ParametersController">
+   <children>
+      <Label id="Label_a" layoutX="39.0" layoutY="43.0" text="a" />
+      <Label id="Label_b" layoutX="39.0" layoutY="74.0" text="b" />
+      <Label id="Label_N_max" layoutX="39.0" layoutY="104.0" text="N_max" />
+      <Label id="Label_delta2" layoutX="39.0" layoutY="136.0" text="delta2" />
+      <Label id="Label_delta3" layoutX="39.0" layoutY="168.0" text="delta3" />
+      <Label id="Label_etta" layoutX="39.0" layoutY="197.0" text="etta" />
+      <Label id="Label_betta" layoutX="39.0" layoutY="229.0" text="betta" />
+      <Label id="Label_S_e_RDT" layoutX="39.0" layoutY="261.0" text="S_e_RDT" />
+      <Label id="Label_C_RDT" layoutX="39.0" layoutY="292.0" text="C_RDT" />
+      <Label id="Label_C_PCR" layoutX="39.0" layoutY="322.0" text="C_PCR" />
+      <TextField id="field_a" layoutX="114.0" layoutY="39.0" />
+      <TextField id="field_b" layoutX="114.0" layoutY="70.0" />
+      <TextField id="field_N_max" layoutX="114.0" layoutY="100.0" />
+      <TextField id="field_delta2" layoutX="114.0" layoutY="132.0" />
+      <TextField id="field_delta3" layoutX="114.0" layoutY="164.0" />
+      <TextField id="field_etta" layoutX="114.0" layoutY="193.0" />
+      <TextField id="field_betta" layoutX="114.0" layoutY="225.0" />
+      <TextField id="field_S_e_RDT" layoutX="114.0" layoutY="257.0" />
+      <TextField id="field_C_RDT" layoutX="114.0" layoutY="288.0" />
+      <TextField id="C_PCR" layoutX="114.0" layoutY="318.0" />
+      <Button id="button_save" layoutX="114.0" layoutY="354.0" mnemonicParsing="false" text="Save" />
+      <Label id="label_status" layoutX="175.0" layoutY="358.0" />
+   </children>
+</AnchorPane>
