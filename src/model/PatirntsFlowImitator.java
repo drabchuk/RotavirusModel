@@ -8,7 +8,10 @@ public class PatirntsFlowImitator {
     private final static double I1 = 0.00027;
     private final static double I2 = 0.572;
     private final static double I3 = 10.743;
-    private final static double MEAN_TRANSMISSION_PARAMETER = 0.0027;
+    //private final static double MEAN_TRANSMISSION_PARAMETER = 0.0027;
+    //private final static double MEAN_TRANSMISSION_PARAMETER = 2.7; //10 days
+    //private final static double MEAN_TRANSMISSION_PARAMETER = 3.3; // 15 days
+    private final static double MEAN_TRANSMISSION_PARAMETER = 3.4; // 15 days
 
     public static double[] getPatientsFlow(int from, int to) {
         double[] mock = new double[to - from + 1];

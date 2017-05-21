@@ -4,8 +4,11 @@ public class Tests {
     public static void main(String[] args) {
         //ModelWithoutParams model = new ModelWithoutParams(0, 2*365);
         ModelWithParams model = new ModelWithParams(0, 2*365);
-        double sum = model.calculate();
-        System.out.println("SUM : " + sum);
+        double estiate = model.calculate();
+        System.out.println("cost : " + model.cost);
+        System.out.println("d2 criteria : " + model.d2Criteria);
+        System.out.println("criteria : " + model.criteria);
+        System.out.println("estimation : " + estiate);
         double[] S = model.S;
         double[] I = model.I;
         double[] Ia = model.Ia;

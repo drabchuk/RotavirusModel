@@ -1,28 +1,64 @@
 package model;
 
-public class ModelWithParams extends ModelWithoutParams{
+public class ModelWithParams {
+
+    public Parameters p;
+    public double[] B;
+    public double[] S;
+    public double[] I;
+    public double[] Ia;
+    public double[] N;
+    public double[] beta;
+    int size;
 
     public boolean[] d1;
     public boolean[] d2;
     public boolean[] d3;
     public boolean[] d4;
+
+    public boolean[] md2;
+    public boolean[] md3;
+    public boolean[] md4;
+
     public double[] K;
 
+    public double criteria;
+    public double cost;
+    public double d2Criteria;
+
+    private int iterator;
+
     public ModelWithParams(int from, int to) {
-        super(from, to);
+        B = PatirntsFlowImitator.getPatientsFlow(from, to);
+        beta = PatirntsFlowImitator.getTransmissions(from, to);
+        this.p = ParametersSingleton.getInstance().getParameters();
+        this.size = B.length;
+        this.S = new double[size];
+        this.I = new double[size];
+        this.Ia = new double[size];
+        this.N = new double[size];
         d1 = new boolean[size];
         d2 = new boolean[size];
         d3 = new boolean[size];
         d4 = new boolean[size];
+        md2 = new boolean[size];
+        md3 = new boolean[size];
+        md4 = new boolean[size];
         for (int i = 0; i < size; i++) {
             d1[i] = true;
             d2[i] = true;
         }
         K = new double[size];
+        criteria = 0.0;
+        d2Criteria = 0.0;
+        cost = 0.0;
+        calculateD2();
+
+        iterator = size - 1;
     }
 
-    @Override
     public double calculate() {
+
         double b;
         double s = 0.0;
         double i = 0.0;
@@ -44,16 +80,14 @@ public class ModelWithParams extends ModelWithoutParams{
         double newI;
         double newInsideI;
 
-        double sum = 0.0;
-
         for (int t = 0; t < size; t++) {
             //inside infected
             insideInfectedNode = transmissive * s;
 
             // estimation function
-            sum += insideInfectedNode;
+            criteria += insideInfectedNode;
 
-            newInsideI = p.etta * s;
+            newInsideI = p.etta * insideInfectedNode;
 
             //cured patients
             curedS = p.delta2 * s;
@@ -78,6 +112,7 @@ public class ModelWithParams extends ModelWithoutParams{
             if (d3[t]) {//if RDT test
                 negativeRDTNode = (1 - p.S_e_RDT) * infectedNode;
                 k += infectedNode - negativeRDTNode;
+                cost += p.C_RDT * b;
             } else {
                 negativeRDTNode = infectedNode;
             }
@@ -98,6 +133,7 @@ public class ModelWithParams extends ModelWithoutParams{
             if (d4[t]) {//if PCR test
                 pcrGroupI = newI;
                 pcrGroupIa = negativeRDTNode - newI;
+                cost += p.C_PCR * b;
             }
 
             n += b - curedS - curedI - curedIa - curedK;
@@ -111,150 +147,131 @@ public class ModelWithParams extends ModelWithoutParams{
 
         }
 
-        return sum;
+        return cost / (criteria - d2Criteria);
 
     }
 
-    /*@Override
-    public double calculate() {
-        if (d2[0]) {
-            S[0] = (1.0 - p.a) * B[0];
-            I[0] = p.a * p.b * B[0];
-            Ia[0] = p.a * (1.0 - p.b) * B[0];
-            K[0] = 0;
-            N[0] = B[0];
-        } else if (d3[0]) {
-            S[0] = (1.0 - p.a) * B[0];
-            I[0] = p.a * p.b * B[0] * (1.0 - p.S_e_RDT);
-            Ia[0] = p.a * (1.0 - p.b) * B[0] * (1.0 - p.S_e_RDT);
-            K[0] = p.a * B[0] * p.S_e_RDT;
-            N[0] = B[0];
-        } else if (d4[0]) {
-            S[0] = (1.0 - p.a) * B[0];
-            I[0] = p.a * p.b * B[0];
-            Ia[0] = p.a * (1.0 - p.b) * B[0];
-            K[0] = 0;
-            N[0] = B[0];
-        }
+    public void calculateD2() {
 
-        double trans;
+        double b;
+        double s = 0.0;
+        double i = 0.0;
+        double ia = 0.0;
+        double k = 0.0;
+        double n = 0.0;
         double curedS;
-        double curedIa;
         double curedI;
+        double curedIa;
         double curedK;
-        double newInfectedS;
-        double newInfectedIa;
-        double newInfectedI;
-        double newInfectedK;
-        double pcrFromIa;
-        double pcrFromI;
-        double sum = 0.0;
-        curedS = p.delta2 * S[0];
-        curedIa = p.delta2 * Ia[0];
-        curedI = p.delta3 * I[0];
-        curedK = p.delta4 * K[0];
-        pcrFromI = 0.0;
-        pcrFromIa = 0.0;
+        double pcrGroupI = 0.0;
+        double pcrGroupIa = 0.0;
+        double pcrGroupIFlow;
+        double pcrGroupIaFlow;
+        double infectedNode;
+        double negativeRDTNode;
+        double insideInfectedNode = 0.0;
+        double transmissive = 0.0;
+        double newI;
+        double newInsideI;
 
-        trans = beta[0] * (I[0] + Ia[0]) * S[0] / N[0];
+        for (int t = 0; t < size; t++) {
+            //inside infected
+            insideInfectedNode = transmissive * s;
 
-        newInfectedS = (1 - p.a) * B[1];
-        newInfectedIa = (1 - p.etta) * trans;
-        if (d1[1]) {
-            double infected = B[1] * p.a * (1.0 - p.b);
-            if (d3[1]) infected *= (1.0 - p.S_e_RDT);
-            newInfectedIa += infected;
-        }
-        newInfectedI = p.etta * trans;
-        if (d1[1]) {
-            double infected = B[1] * p.a * p.b;
-            if (d3[1]) {
-                infected *= (1 - p.S_e_RDT);
-            }
-            newInfectedI += infected;
-        }
+            // estimation function
+            d2Criteria += insideInfectedNode;
 
-        newInfectedK = 0.0;
-        if (d1[1]) {
-            if (d3[1]) {
-                newInfectedK = B[0] * p.a * p.S_e_RDT;
-            } else if (d4[0]){
-                newInfectedK = B[1] * p.a * p.S_e_PCR;
-            }
-            newInfectedK += newInfectedK;
-        }
+            newInsideI = p.etta * insideInfectedNode;
 
-        S[1] = S[0] - trans + newInfectedS - curedS;
-        Ia[1] = Ia[0] + newInfectedIa - curedIa;
-        I[1] = I[0] + newInfectedI - curedI;
-        K[1] = K[0] + newInfectedK - curedK;
-        N[1] = N[0] + B[1] - curedI - curedIa - curedK - curedS;
+            //cured patients
+            curedS = p.delta2 * s;
+            curedI = p.delta3 * i;
+            curedIa = p.delta2 * ia;
+            curedK = p.delta4 * k;
+            s -= curedS;
+            i -= curedI;
+            ia -= curedIa;
+            k -= curedK;
 
+            //inside infected moves to I and Ia
+            s -= insideInfectedNode;
+            i += newInsideI;
+            ia += insideInfectedNode - newInsideI;
 
-        for (int t = 1; t < size - 1; t++) {
+            //new patients
+            b = B[t];
 
-            curedS = p.delta2 * S[t];
-            curedIa = p.delta2 * Ia[t];
-            curedI = p.delta3 * I[t];
-            curedK = p.delta4 * K[t];
+            infectedNode = b * p.a;
+            s += b - infectedNode;// s += b * (1 - p.a);
 
-            newInfectedS = 0;
-            newInfectedIa = 0;
-            newInfectedI = 0;
+            negativeRDTNode = infectedNode;
+            newI = negativeRDTNode * p.b;
+            i += newI;
+            ia += negativeRDTNode - newI;
+            //new patients distributed
 
-            pcrFromI = 0;
-            pcrFromIa = 0;
+            //yesterday PCR group
+            pcrGroupIFlow = pcrGroupI * p.S_e_PCR;
+            pcrGroupIaFlow = pcrGroupIa * p.S_e_PCR;
+            i -= pcrGroupIFlow;
+            ia -= pcrGroupIaFlow;
+            k += pcrGroupIaFlow + pcrGroupIFlow;
+            pcrGroupI = 0.0;
+            pcrGroupIa = 0.0;
 
-            trans = beta[t] * (I[t] + Ia[t]) * S[t] / N[t];
+            n += b - curedS - curedI - curedIa - curedK;
+            transmissive = beta[t] * (i + ia) / n;
 
-            newInfectedS = (1 - p.a) * B[t];
-
-            if (d1[t + 1]) {
-                if (d2[t + 1]) {
-
-                } else if (d3[t + 1]) {
-
-                }
-                if (d4[t]) {
-
-                }
-            }
-
-            /*
-            S[t + 1] = S[t] - trans + newInfectedS - curedS;
-            Ia[t + 1] = Ia[t] + (1 - p.etta) * trans - curedIa;
-            if (d1[t]) {
-                double infected = B[t] * p.a * (1.0 - p.b);
-                if (d3[t]) infected *= (1.0 - p.S_e_RDT);
-                else if (d4[t]) infected = p.a * (1 - p.b) * B[t - 1] * p.S_e_PCR;
-                Ia[t + 1] += infected;
-            }
-            I[t + 1] = I[t] + p.etta * trans - curedI;
-            if (d1[t]) {
-                double infected = B[t] * p.a * p.b;
-                if (d3[t]) {
-                    infected *= (1 - p.S_e_RDT);
-                } else if (d4[t]) {
-                    infected -= p.a * p.b * B[t - 1] * p.S_e_PCR;
-                }
-                I[t + 1] += infected;
-            }
-
-            K[t + 1] = K[t] - p.delta4 * K[t];
-            if (d1[0]) {
-                if (d2[0]) {
-                    K[t + 1] += B[t] * p.a * p.S_e_RDT;
-                } else if (d3[0]) {
-                    K[t + 1] += p.a * B[t - 1] * p.S_e_PCR;
-                }
-            }*/
-
-        /*N[t + 1] = N[t] + B[t + 1] - curedI - curedIa - curedK - curedS;
-
-            sum += p.etta * trans;
+            S[t] = s;
+            I[t] = i;
+            Ia[t] = ia;
+            K[t] = k;
+            N[t] = n;
 
         }
 
-        return sum;
-    }*/
+    }
+
+    public void remParam() {
+        System.arraycopy(d2, 0, md2, 0, size);
+        System.arraycopy(d3, 0, md3, 0, size);
+        System.arraycopy(d4, 0, md4, 0, size);
+    }
+
+    public void setMinParam() {
+        System.arraycopy(md2, 0, d2, 0, size);
+        System.arraycopy(md3, 0, d3, 0, size);
+        System.arraycopy(md4, 0, d4, 0, size);
+    }
+
+    public boolean next() {
+        if (d2[iterator]) {
+            d2[iterator] = false;
+            d3[iterator] = true;
+        } else if (d3[iterator]) {
+            d3[iterator] = false;
+            d4[iterator] = true;
+        } else if (d4[iterator]) {
+            int pos = iterator;
+            do {
+                pos--;
+            } while (pos >= 0 && d4[pos]);
+            if (pos < 0) return false;
+            if (d2[pos]) {
+                d2[pos] = false;
+                d3[pos] = true;
+            } else {
+                d3[pos] = false;
+                d4[pos] = true;
+            }
+            for (int i = pos + 1; i < size; i++) {
+                d2[i] = true;
+                d3[i] = false;
+                d4[i] = false;
+            }
+            iterator = size - 1;
+        }
+        return true;
+    }
+
 }
