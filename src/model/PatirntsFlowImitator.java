@@ -8,31 +8,31 @@ public class PatirntsFlowImitator {
     private final static double I1 = 0.00027;
     private final static double I2 = 0.572;
     private final static double I3 = 10.743;
-    //private final static double MEAN_TRANSMISSION_PARAMETER = 0.0027;
-    //private final static double MEAN_TRANSMISSION_PARAMETER = 2.7; //10 days
+    private final static double MEAN_TRANSMISSION_PARAMETER = 0.0027;
+    //private final static double MEAN_TRANSMISSION_PARAMETER = 0.27; //10 days
     //private final static double MEAN_TRANSMISSION_PARAMETER = 3.3; // 15 days
-    private final static double MEAN_TRANSMISSION_PARAMETER = 3.4; // 15 days
+    //private final static double MEAN_TRANSMISSION_PARAMETER = 3.4; // 15 days
 
     public static double[] getPatientsFlow(int from, int to) {
-        double[] mock = new double[to - from + 1];
-        for (int i = from; i <= to; i++) {
-            mock[i] = flow(i);
+        double[] mock = new double[to - from];
+        for (int i = 0; i < to - from; i++) {
+            mock[i] = flow(i + from + 1);
         }
         return mock;
     }
 
     public static double[] getTransmissions(int from, int to) {
-        double[] mock = new double[to - from + 1];
-        for (int i = from; i <= to; i++) {
-            mock[i] = transmissive(i);
+        double[] mock = new double[to - from];
+        for (int i = 0; i < to - from; i++) {
+            mock[i] = transmissive(i + from + 1);
         }
         return mock;
     }
 
     public static double[] getPopulation(int from, int to) {
-        double[] mock = new double[to - from + 1];
-        for (int i = from; i <= to; i++) {
-            mock[i] = population(i);
+        double[] mock = new double[to - from];
+        for (int i = 0; i < to - from; i++) {
+            mock[i] = population(i + from + 1);
         }
         return mock;
     }

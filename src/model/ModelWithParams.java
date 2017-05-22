@@ -8,6 +8,7 @@ public class ModelWithParams {
     public double[] I;
     public double[] Ia;
     public double[] N;
+    public double[] K;
     public double[] beta;
     int size;
 
@@ -20,7 +21,7 @@ public class ModelWithParams {
     public boolean[] md3;
     public boolean[] md4;
 
-    public double[] K;
+
 
     public double criteria;
     public double cost;
@@ -44,9 +45,19 @@ public class ModelWithParams {
         md2 = new boolean[size];
         md3 = new boolean[size];
         md4 = new boolean[size];
-        for (int i = 0; i < size; i++) {
+        /*for (int i = 0; i < size; i++) {
             d1[i] = true;
             d2[i] = true;
+        }*/
+        for (int i = 0; i < size; i++) {
+            int testI = (int) (Math.random() * 3.0);
+            if (testI == 0) {
+                d2[i] = true;
+            } else if (testI == 1) {
+                d3[i] = true;
+            } else if (testI == 2) {
+                d4[i] = true;
+            }
         }
         K = new double[size];
         criteria = 0.0;
@@ -60,11 +71,16 @@ public class ModelWithParams {
     public double calculate() {
 
         double b;
-        double s = 0.0;
-        double i = 0.0;
-        double ia = 0.0;
-        double k = 0.0;
-        double n = 0.0;
+        /*double s = S[0];
+        double i = I[0];
+        double ia = Ia[0];
+        double k = K[0];
+        double n = N[0];*/
+        double s = 0;
+        double i = 0;
+        double ia = 0;
+        double k = 0;
+        double n = 0;
         double curedS;
         double curedI;
         double curedIa;
@@ -154,11 +170,16 @@ public class ModelWithParams {
     public void calculateD2() {
 
         double b;
-        double s = 0.0;
-        double i = 0.0;
-        double ia = 0.0;
-        double k = 0.0;
-        double n = 0.0;
+        /*double s = S[0];
+        double i = I[0];
+        double ia = Ia[0];
+        double k = K[0];
+        double n = N[0];*/
+        double s = 0;
+        double i = 0;
+        double ia = 0;
+        double k = 0;
+        double n = 0;
         double curedS;
         double curedI;
         double curedIa;
@@ -229,7 +250,11 @@ public class ModelWithParams {
             N[t] = n;
 
         }
-
+        /*S[0] = 0;
+        I[0] = 0;
+        Ia[0] = 0;
+        K[0] = 0;
+        N[0] = 0;*/
     }
 
     public void remParam() {

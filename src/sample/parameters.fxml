@@ -4,7 +4,8 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ParametersController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sample.ParametersController">
    <children>
       <Label id="Label_a" layoutX="39.0" layoutY="43.0" text="a" />
       <Label id="Label_b" layoutX="39.0" layoutY="74.0" text="b" />
@@ -13,7 +14,7 @@
       <Label id="Label_delta3" layoutX="39.0" layoutY="168.0" text="delta3" />
       <Label id="label_delta4" layoutX="39.0" layoutY="198.0" text="delta4" />
       <Label id="Label_etta" layoutX="39.0" layoutY="232.0" text="etta" />
-      <Label id="Label_betta" layoutX="39.0" layoutY="264.0" text="betta" />
+      <Label id="Label_betta" layoutX="39.0" layoutY="264.0" text="S_e_PCR" />
       <Label id="Label_S_e_RDT" layoutX="39.0" layoutY="296.0" text="S_e_RDT" />
       <Label id="Label_C_RDT" layoutX="39.0" layoutY="327.0" text="C_RDT" />
       <Label id="Label_C_PCR" layoutX="39.0" layoutY="357.0" text="C_PCR" />

@@ -1,3 +1,5 @@
+package sample;
+
 import model.PatirntsFlowImitator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -26,16 +28,16 @@ public class Plotter extends ApplicationFrame {
     private DefaultCategoryDataset createDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         int from = 0;
-        int to = 2000;
+        int to = 365 * 6;
         double[] patients = PatirntsFlowImitator.getPatientsFlow(from, to);
-        for (int i = from; i <= to; i++) {
+        for (int i = from; i < to; i++) {
             dataset.addValue(patients[i], "patients", Integer.toString(i));
         }
 
         return dataset;
     }
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         Plotter chart = new Plotter(
                 "Patients",
                 "Patients");
